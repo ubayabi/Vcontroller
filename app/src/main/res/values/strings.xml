@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">VController</string>
+    <string name="app_version">VController 1.0</string>
+    <string name="statistic">Output Statistic</string>
+    <string name="configure">TCP/MQTT</string>
+    <string name="controller">Output Manager</string>
+    <string name="load">Load/Save</string>
+
+    <string name="help">Help</string>
+    <string name="command">I/O Command</string>
+    <string name="about">About Us</string>
+
+    <string name="output_name">Name</string>
+    <string name="output_name_hint">Output Name</string>
+    <string name="output_position">Position</string>
+    <string name="output_position_hint">Position</string>
+    <string name="output_power">Power</string>
+    <string name="output_power_hint">Power</string>
+    <string name="save">Save Changes</string>
+    <string name="add">Add</string>
+
+    <string name="dummy">dummy</string>
+    <string name="dummy_number">00</string>
+    <string name="position">Position</string>
+    <string name="power">Power</string>
+    <string name="double_dot">:</string>
+    <string name="watt">Watt</string>
+    <string name="action">Action</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
+    <string name="clock">00:00</string>
+    <string name="set_timer">Set Timer</string>
+    <string name="add_new">Add New</string>
+    <string name="enable_timer">Enable Timer</string>
+    <string name="edit">Edit</string>
+    <string name="test">Test</string>
+
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="average">Avg/day</string>
+
+    <string name="loaddata">Load Setting</string>
+    <string name="savedata">Save Setting</string>
+    <string name="kurung_buka"> ( </string>
+    <string name="kurung_tutup"> ) </string>
+    <string name="usage">Output Usages</string>
+
+    <string name="title_activity_about_us">AboutUs</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="mqtt">MQTT</string>
+    <string name="tcp">TCP</string>
+    <string name="ip">IP/Domain Name</string>
+    <string name="port">Port</string>
+    <string name="broker_url">Broker URL</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="topic">Topic</string>
+    <string name="set_config">OK</string>
+    <string name="set_topic" formatted="false">%s/%s</string>
+
+    <string name="send">Input Output Command</string>
+    <string name="timer">Timer:</string>
+    <string name="turn_on_command">Turn ON</string>
+    <string name="turn_off_command">Turn OFF</string>
+
+    <string name="how_it_works">How it works?</string>
+
+    <string name="designer">Designer &amp; Front-End Programmer</string>
+    <string name="name1">Abi Karami Wijaya</string>
+    <string name="debugger">Debugger &amp; Back-End Programmer</string>
+    <string name="name2">Ryvaldie Ishaq Hamdallah</string>
+    <string name="additional">Additional Library</string>
+    <string name="lib1">com.astuetz:pagerslidingtabstrip:1.0.1</string>
+    <string name="thanks">Thanks To</string>
+    <string name="thanks1">Adobe, Google, Github,</string>
+    <string name="thanks2">StackOverFlow &amp; Libraries for Developer</string>
+    <string name="com">Company</string>
+    <string name="voidream">Voidream</string>
+    <string name="contact">Contact</string>
+    <string name="contact1">Instagram: voidream.group</string>
+    <string name="contact2">Instagram: a_bi__</string>
+    <string name="contact3">Line: bc180</string>
+    <string name="contact4">Line: ryvaldie</string>
+
+    <string name="mqtt_error_toast">Something went wrong! %s</string>
+
+</resources>

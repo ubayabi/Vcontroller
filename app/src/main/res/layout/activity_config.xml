@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@color/window_translucent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="voidream.vcontroller.Config">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/background_rounded_rectangle_grey" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="6dp"
+            android:layout_above="@+id/linearLayout5"
+            android:background="@drawable/background_rounded_rectangle">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearlayout_config_tcp"
+                android:visibility="visible"
+                android:elevation="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ip"
+                    android:id="@+id/textView24"
+                    android:textColor="@color/text2"
+                    android:paddingLeft="6dp"
+                    android:paddingTop="2dp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:id="@+id/edittext_config_tcp_ip_or_domain_name"
+                    android:autoText="false"
+                    android:background="@drawable/background_textfield"
+                    android:layout_margin="6dp"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/port"
+                    android:id="@+id/textView28"
+                    android:textColor="@color/text2"
+                    android:paddingLeft="6dp"
+                    android:paddingTop="2dp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:id="@+id/edittext_config_tcp_port"
+                    android:background="@drawable/background_textfield"
+                    android:layout_margin="6dp"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:maxLength="4" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearlayout_config_mqtt"
+                android:visibility="gone"
+                android:background="@drawable/background_rounded_rectangle"
+                android:elevation="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/broker_url"
+                    android:id="@+id/textView53"
+                    android:textColor="@color/text2"
+                    android:paddingLeft="6dp"
+                    android:paddingTop="2dp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:id="@+id/edittext_config_mqtt_broker_url"
+                    android:autoText="false"
+                    android:background="@drawable/background_textfield"
+                    android:layout_margin="6dp"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/port"
+                    android:id="@+id/textView54"
+                    android:textColor="@color/text2"
+                    android:paddingLeft="6dp"
+                    android:paddingTop="2dp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:id="@+id/edittext_config_mqtt_port"
+                    android:background="@drawable/background_textfield"
+                    android:layout_margin="6dp"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:maxLength="4" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/username"
+                            android:id="@+id/textView55"
+                            android:textColor="@color/text2"
+                            android:paddingLeft="6dp"
+                            android:paddingTop="2dp" />
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="38dp"
+                            android:id="@+id/edittext_config_mqtt_username"
+                            android:background="@drawable/background_textfield"
+                            android:layout_margin="6dp"
+                            android:paddingLeft="12dp"
+                            android:paddingRight="12dp"
+                            android:paddingTop="6dp"
+                            android:paddingBottom="6dp"
+                            android:maxLength="15" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/password"
+                            android:id="@+id/textView56"
+                            android:textColor="@color/text2"
+                            android:paddingLeft="6dp"
+                            android:paddingTop="2dp" />
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="38dp"
+                            android:id="@+id/edittext_config_mqtt_password"
+                            android:background="@drawable/background_textfield"
+                            android:layout_margin="6dp"
+                            android:paddingLeft="12dp"
+                            android:paddingRight="12dp"
+                            android:paddingTop="6dp"
+                            android:paddingBottom="6dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/topic"
+                    android:id="@+id/textView57"
+                    android:textColor="@color/text2"
+                    android:paddingLeft="6dp"
+                    android:paddingTop="2dp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:id="@+id/edittext_config_mqtt_topic"
+                    android:autoText="false"
+                    android:background="@drawable/background_textfield"
+                    android:layout_margin="6dp"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:elevation="2dp"
+            android:background="@drawable/background_rounded_rectangle"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginBottom="6dp"
+            android:id="@+id/linearLayout5">
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:orientation="horizontal"
+                android:id="@+id/radiogroup_config"
+                android:layout_weight="1">
+
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/tcp"
+                    android:button="@drawable/radiobutton_config"
+                    android:id="@+id/radiobutton_config_tcp"
+                    android:textSize="18sp"
+                    android:checked="true"
+                    android:enabled="true"
+                    android:textColor="@color/text1"
+                    android:layout_weight="1" />
+
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/mqtt"
+                    android:button="@drawable/radiobutton_config"
+                    android:id="@+id/radiobutton_config_mqtt"
+                    android:textSize="18dp"
+                    android:checked="false"
+                    android:textColor="@color/text1"
+                    android:layout_weight="1" />
+            </RadioGroup>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/set_config"
+                    android:id="@+id/button_config_set"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/button_flat"
+                    android:textColor="@android:color/white" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+</LinearLayout>
