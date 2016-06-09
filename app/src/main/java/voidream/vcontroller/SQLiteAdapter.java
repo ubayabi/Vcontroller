@@ -85,11 +85,11 @@ public class SQLiteAdapter extends SQLiteOpenHelper {
     }
 
 
-    public void AddController(String nama_, String posisi_, String power_, String id_image_){
+    public void AddController(String nama_, String posisi_, String power_, int id_image_){
         db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        if(nama_!=null & posisi_!=null & power_!=null & id_image_!= null){
+        if(nama_!=null & posisi_!=null & power_!=null & id_image_!= 0){
             values.put(nama, nama_);
             values.put(posisi, posisi_);
             values.put(power, power_);

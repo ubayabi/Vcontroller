@@ -35,6 +35,7 @@ public class AdapterSettingOutput extends BaseAdapter {
         if (sqLiteAdapter.getController() != null) {
             String[][] data_controller = sqLiteAdapter.getController();
             int[] id_image = new int[data_controller[4].length];
+            output_number = new String[data_controller[4].length];
             for (int a=0;a<data_controller[4].length;a++){
                 output_number[a] = String.format(Locale.getDefault(), "%02d", a);
                 id_image[a] = Integer.valueOf(data_controller[4][a]);
@@ -81,7 +82,7 @@ public class AdapterSettingOutput extends BaseAdapter {
                 setting_output_name.setText(output_name[position]);
                 setting_output_position.setText(output_position[position]);
                 setting_output_power.setText(output_power[position]);
-                setting_output_image.setImageResource(id_image[0]);
+                setting_output_image.setImageResource(id_image[position]);
                 setting_output_image.setTag(id_image[position]);
             }
         });
