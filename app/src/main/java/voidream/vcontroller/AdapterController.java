@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -58,7 +58,7 @@ public class AdapterController extends BaseAdapter {
         convertView = inflater.inflate(R.layout.custom_list_controller, null);
 
         TextView output_number = (TextView)convertView.findViewById(R.id.textview_output_number);
-        ImageView output_image = (ImageView)convertView.findViewById(R.id.imageview_controller_output_image);
+        CheckBox output_image = (CheckBox) convertView.findViewById(R.id.imageview_controller_output_image);
         TextView output_name = (TextView)convertView.findViewById(R.id.textview_controller_output_name);
         TextView output_position = (TextView)convertView.findViewById(R.id.textview_controller_output_position);
         TextView output_power = (TextView)convertView.findViewById(R.id.textview_controller_output_power);
@@ -67,7 +67,7 @@ public class AdapterController extends BaseAdapter {
         ImageButton button_timer = (ImageButton)convertView.findViewById(R.id.imagebutton_controller_timer);
 
         output_number.setText(String.format("%0" + (2 - String.valueOf(position+1).length()) + "d%s", 0, String.valueOf(position+1)));
-        output_image.setImageResource(Id_outputimage[position]);
+        output_image.setButtonDrawable(Id_outputimage[position]);
         output_name.setText(outputName[position]);
 
 

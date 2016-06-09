@@ -20,7 +20,7 @@
                 android:id="@+id/relativeLayout5"
                 android:layout_weight="1.1">
 
-                <ImageView
+                <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/imageview_controller_output_image"
