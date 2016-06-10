@@ -88,5 +88,7 @@
     <string name="contact4">Line: ryvaldie</string>
 
     <string name="mqtt_error_toast">Something went wrong! %s</string>
+    <string name="update_list_controller">update_list_controller</string>
+    <string name="delete_controller_menu_string">Delete</string>
 
 </resources>

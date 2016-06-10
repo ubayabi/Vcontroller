@@ -5,9 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,17 +24,18 @@ import java.util.Locale;
  */
 public class AdapterSettingOutput extends BaseAdapter {
 
-    SQLiteAdapter sqLiteAdapter;
-    int[] id_image = null;// = {R.drawable.out_1};
-    String[] output_name = null;//={"Lampu Kuning", "Lampu LED", "Lampu Belajar", "Test", "Test", "Test", "Test"};;
-    String[] output_position = null;//={"Ruang Tamu", "Dapur", "Kamar", "Test", "Test", "Test", "Test"};;
-    String[] output_power = null;//={"10", "20", "5", "10", "1", "2", "3"};
-    String[] output_number = null;//String[] output_number;//={"01", "02", "03", "04","05","06","07"};
+    private SQLiteAdapter sqLiteAdapter;
+    private int[] id_image = null;// = {R.drawable.out_1};
+    private String[] output_name = null;//={"Lampu Kuning", "Lampu LED", "Lampu Belajar", "Test", "Test", "Test", "Test"};;
+    private String[] output_position = null;//={"Ruang Tamu", "Dapur", "Kamar", "Test", "Test", "Test", "Test"};;
+    private String[] output_power = null;//={"10", "20", "5", "10", "1", "2", "3"};
+    private String[] output_number = null;//String[] output_number;//={"01", "02", "03", "04","05","06","07"};
 
-    Context context;
+    private static Context context;
 
     AdapterSettingOutput(Context ini){
         context = ini;
+        //menuInflater = new MenuInflater(context);
         sqLiteAdapter = new SQLiteAdapter(context);
         if (sqLiteAdapter.getController() != null) {
             String[][] data_controller = sqLiteAdapter.getController();
@@ -52,7 +57,7 @@ public class AdapterSettingOutput extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public String getItem(int position) {
         return output_name[position];
     }
 
@@ -83,7 +88,6 @@ public class AdapterSettingOutput extends BaseAdapter {
                 setting_output_position.setText(output_position[position]);
                 setting_output_power.setText(output_power[position]);
                 setting_output_image.setImageResource(id_image[position]);
-                setting_output_image.setTag(id_image[position]);
             }
         });
 
@@ -96,6 +100,19 @@ public class AdapterSettingOutput extends BaseAdapter {
             }
         });
 
+        convertView.setLongClickable(true);
+        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                sqLiteAdapter.deleteController(output_name[position]);
+                Intent intent = new Intent(SettingOutputForm.BROADCAST_ACTION);
+                intent.putExtra(context.getString(R.string.update_list_controller), true);
+                context.sendBroadcast(intent);
+                return true;
+            }
+        });
+
         return convertView;
     }
+
 }

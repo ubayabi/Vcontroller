@@ -1,5 +1,6 @@
 package voidream.vcontroller;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -52,6 +53,7 @@ public class AdapterController extends BaseAdapter {
         return position;
     }
 
+    @SuppressLint({"ViewHolder", "InflateParams"})
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -66,8 +68,10 @@ public class AdapterController extends BaseAdapter {
         ImageButton button_push = (ImageButton)convertView.findViewById(R.id.imagebutton_controller_push_button);
         ImageButton button_timer = (ImageButton)convertView.findViewById(R.id.imagebutton_controller_timer);
 
-        output_number.setText(String.format("%0" + (2 - String.valueOf(position+1).length()) + "d%s", 0, String.valueOf(position+1)));
+        output_number.setText(String.format("%0" + (2 - String.valueOf(position).length()) + "d%s", 0, String.valueOf(position)));
         output_image.setButtonDrawable(Id_outputimage[position]);
+        output_image.setClickable(false);
+        //output_image.setChecked(true);
         output_name.setText(outputName[position]);
 
 
@@ -76,8 +80,6 @@ public class AdapterController extends BaseAdapter {
         output_status.setText(this.status[position]);
 
         button_push.setOnClickListener(new View.OnClickListener() {
-
-
             @Override
             public void onClick(View v) {
 
@@ -89,11 +91,8 @@ public class AdapterController extends BaseAdapter {
 
             @Override
             public void onClick(View v) {
-
                 Intent intent= new Intent(context, SetTimer.class);
-                intent.putExtra("",String.valueOf(position));
                 context.startActivity(intent);
-
             }
         });
 

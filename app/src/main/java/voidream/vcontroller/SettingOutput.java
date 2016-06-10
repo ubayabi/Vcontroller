@@ -1,23 +1,32 @@
 package voidream.vcontroller;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.Set;
 
 public class SettingOutput extends Activity {
-
-    ListView setting_output;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_output);
 
-        AdapterSettingOutput adapterSettingOutput = new AdapterSettingOutput(this);
-        setting_output = (ListView)findViewById(R.id.listview_setting_output);
+        registerReceiver(broadcastReceiver, new IntentFilter(SettingOutputForm.BROADCAST_ACTION));
+
+        final AdapterSettingOutput adapterSettingOutput = new AdapterSettingOutput(this);
+        ListView setting_output = (ListView) findViewById(R.id.listview_setting_output);
         setting_output.setAdapter(adapterSettingOutput);
 
         Button add_new = (Button)findViewById(R.id.button_setting_output_add);
@@ -29,5 +38,32 @@ public class SettingOutput extends Activity {
                 startActivity(setting_output_form);
             }
         });
+    }
+
+    private void updateUI(Intent intent){
+        if (intent.hasExtra(getString(R.string.update_list_controller))){
+            finish();
+            Intent restart = new Intent(this, SettingOutput.class);
+            startActivity(restart);
+        }
+    }
+
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateUI(intent);
+        }
+    };
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        registerReceiver(broadcastReceiver, new IntentFilter(SettingOutputForm.BROADCAST_ACTION));
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
     }
 }
