@@ -95,7 +95,10 @@ public class AdapterSettingOutput extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent= new Intent(context, SettingOutputForm.class);
-                //intent.putExtra("",String.valueOf(position));
+                String[] edit = new String[]{output_number[position], output_name[position]
+                        , output_position[position], output_power[position]};
+                intent.putExtra(context.getString(R.string.edit_controller), edit);
+                intent.putExtra(context.getString(R.string.edit_controller_id_image), id_image[position]);
                 context.startActivity(intent);
             }
         });

@@ -7,6 +7,8 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Created by Ryvaldie on 21/10/15.
  */
@@ -124,6 +126,25 @@ public class SQLiteAdapter extends SQLiteOpenHelper {
         cursor.close();
 
         return result;
+    }
+
+    public boolean getValidController(String nama_){
+        db = this.getReadableDatabase();
+
+        String[] columns = new String[]{nama, posisi, power, status, id_image};
+        Cursor cursor = db.query(tabel_controller, columns,
+                nama + "='" + nama_ + "'", null, null, null, null);
+
+        String check = null;
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()){
+            check = cursor.getString(0);//nama
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        assert check != null;
+        return StringUtils.isBlank(check);
     }
 
     public void addControllerStatus(String nama_, String status_){

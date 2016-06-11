@@ -90,5 +90,8 @@
     <string name="mqtt_error_toast">Something went wrong! %s</string>
     <string name="update_list_controller">update_list_controller</string>
     <string name="delete_controller_menu_string">Delete</string>
+    <string name="edit_controller">edit_controller</string>
+    <string name="edit_controller_id_image">edit_controller_id_image</string>
+    <string name="nama_sudah_ada">Nama sudah ada</string>
 
 </resources>
