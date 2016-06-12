@@ -82,6 +82,13 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.CustomTheme" />
+        <service
+            android:name=".MqttService"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name=".MqttService" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

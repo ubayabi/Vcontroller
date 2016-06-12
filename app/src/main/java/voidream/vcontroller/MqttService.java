@@ -30,17 +30,18 @@ public class MqttService extends Service {
         StrictMode.enableDefaults();
         // Ambil data array
         // 0 = url,
-        String[] data_intent = intent.getStringArrayExtra("data_mqtt");
+        String[] data_intent = intent.getStringArrayExtra(this.getResources().getString(R.string.data_mqtt));
 
         // Ambil Device ID
         String android_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         String deviceId = Md5.md5(android_id).toUpperCase();
-        Log.i("device id=", deviceId);
         final String clientId = deviceId.substring(deviceId.length()-20);
+        deviceId = deviceId.substring(deviceId.length() - 25);
 
         // Ambil url dan topic
-        String broker_url = data_intent[0];
-        String topic = this.getResources().getString(R.string.set_topic, deviceId, data_intent[1]);
+        String broker_url = this.getResources().getString(R.string.broker_url_string
+                , data_intent[0], data_intent[1]);
+        String topic = this.getResources().getString(R.string.set_topic, deviceId, data_intent[2]);
 
         try {
             mqttClient = new MqttClient(broker_url, clientId, new MemoryPersistence());
@@ -49,9 +50,9 @@ public class MqttService extends Service {
             mqttConnectOptions.setWill(mqttClient.getTopic("Error")
                     , "something went wrong!".getBytes(), 1, true);
             //untuk connect ke broker sendiri
-            if (data_intent.length>2) {
-                mqttConnectOptions.setUserName(data_intent[3]);
-                mqttConnectOptions.setPassword(data_intent[4].toCharArray());
+            if (data_intent.length>4) {
+                mqttConnectOptions.setUserName(data_intent[4]);
+                mqttConnectOptions.setPassword(data_intent[5].toCharArray());
                 mqttConnectOptions.setCleanSession(true);
             }
             mqttClient.connect(mqttConnectOptions);

@@ -57,6 +57,7 @@
     <string name="ip">IP/Domain Name</string>
     <string name="port">Port</string>
     <string name="broker_url">Broker URL</string>
+    <string name="broker_url_string" formatted="false">tcp://%s:%s</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="topic">Topic</string>
@@ -93,5 +94,8 @@
     <string name="edit_controller">edit_controller</string>
     <string name="edit_controller_id_image">edit_controller_id_image</string>
     <string name="nama_sudah_ada">Nama sudah ada</string>
+    <string name="default_mqtt_broker">iot.eclipse.org</string>
+    <string name="default_mqtt_port">1883</string>
+    <string name="data_mqtt">data_mqtt</string>
 
 </resources>
