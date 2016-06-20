@@ -17,22 +17,24 @@ import org.eclipse.paho.client.mqttv3.internal.MemoryPersistence;
 public class MqttPublisher {
 
     Context context;
+    String[] data_intent;
     public MqttPublisher(Context ini){
         context = ini;
+        data_intent = new SQLiteAdapter(context).getMqttSetting();
     }
 
     public void publishMqttMessage(String message){
         // Ambil Device ID
-        Md5 hash_md5 = new Md5();
         String android_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        String deviceId = hash_md5.md5(android_id).toUpperCase();
+        String deviceId = Md5.md5(android_id).toUpperCase();
         final String clientId = deviceId.substring(deviceId.length()-20) + "p";
-        final String TOPIC = "/tes";//+clientId
-        String BROKER_URL = "tcp://192.168.2.60:1883";
+        final String broker_url = context.getResources().getString(R.string.broker_url_string
+                , data_intent[0], data_intent[1]);
+        final String topic = data_intent[2];//R.string.set_topic, deviceId,
         final MqttMessage mqttMessage = new MqttMessage();
         mqttMessage.setPayload(message.getBytes());
         try {
-            final MqttClient mqttClientPublish = new MqttClient(BROKER_URL, clientId, new MemoryPersistence());
+            final MqttClient mqttClientPublish = new MqttClient(broker_url, clientId, new MemoryPersistence());
             final MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
             mqttConnectOptions.setKeepAliveInterval(30);
             mqttConnectOptions.setWill(mqttClientPublish.getTopic("Error"), "something went wrong!".getBytes(), 1, true);
@@ -44,11 +46,11 @@ public class MqttPublisher {
                 public void run() {
                     try {
                         mqttClientPublish.connect(mqttConnectOptions);
-                        mqttClientPublish.subscribe(TOPIC);
-                        MqttTopic mqttTopic = mqttClientPublish.getTopic(TOPIC);
+                        mqttClientPublish.subscribe(topic);
+                        MqttTopic mqttTopic = mqttClientPublish.getTopic(topic);
                         mqttTopic.publish(mqttMessage);
                         mqttClientPublish.disconnect();
-                        mqttClientPublish.unsubscribe(TOPIC);
+                        mqttClientPublish.unsubscribe(topic);
                     } catch (MqttException e) {
                         e.printStackTrace();
                     }

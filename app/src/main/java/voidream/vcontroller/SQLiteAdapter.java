@@ -17,7 +17,7 @@ public class SQLiteAdapter extends SQLiteOpenHelper {
 
     private SQLiteDatabase db;
     private static final String database_name = "VcontrollerDB";
-    private static final int database_version = 1;//naikin setiap ada perubahan
+    private static final int database_version = 2;//naikin setiap ada perubahan
 
     public SQLiteAdapter(Context context) {
         super(context, database_name, null, database_version);
@@ -49,12 +49,12 @@ public class SQLiteAdapter extends SQLiteOpenHelper {
     private static final String create_tabel_setting_mqtt =
             "create table " + tabel_setting_mqtt + " (" + key_id + " INTEGER PRIMARY KEY,"
                     + broker_url + " TEXT," + port + " TEXT," + username + " TEXT,"
-                    + password + " TEXT,"+ topic + " TEXT," + status + " TEXT" + ")";
+                    + password + " TEXT,"+ topic + " TEXT" + ")";
 
     private static final String ip_or_domain = "ip_domain";
     private static final String create_tabel_setting_tcp =
             "create table " + tabel_setting_tcp+ " (" + key_id + " INTEGER PRIMARY KEY,"
-                    + ip_or_domain + " TEXT," + port + " TEXT," + status + " TEXT" + ")";
+                    + ip_or_domain + " TEXT," + port + " TEXT" + ")";
 
     private static final String on_command = "on_command", off_command = "off_command"
             , timer_command = "timer_command";
@@ -158,7 +158,7 @@ public class SQLiteAdapter extends SQLiteOpenHelper {
             values.put(status, status_);
         }
 
-        db.insert(tabel_controller, nama + "='" + nama_ + "'" , values);
+        db.update(tabel_controller, values, nama + "='" + nama_ + "'" , null);
         db.close();
     }
 
@@ -169,7 +169,7 @@ public class SQLiteAdapter extends SQLiteOpenHelper {
     }
 
     public void addMqttSetting(String broker_url_, String port_, String username_, String password_
-            , String topic_, String use_or_not){
+            , String topic_){
         db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -179,32 +179,22 @@ public class SQLiteAdapter extends SQLiteOpenHelper {
             values.put(username, username_);
             values.put(password, password_);
             values.put(topic, topic_);
-            values.put(status, use_or_not);
         }
 
         db.insert(tabel_setting_mqtt, null, values);
         db.close();
     }
 
-    public void addMqttSettingStatus(String broker, String use_or_not){
-        db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(status, use_or_not);
-
-        db.insert(tabel_setting_mqtt, broker_url + "='" + broker + "'", values);
-        db.close();
-    }
-
     public String[] getMqttSetting(){
         db = this.getReadableDatabase();
-        String[] columns = new String[]{broker_url, port, username, password, topic, status};
+        String[] columns = new String[]{broker_url, port, username, password, topic};
         Cursor cursor = db.query(tabel_setting_mqtt, columns, null
                 , null, null, null, null);
 
         int size = 0;
         cursor.moveToFirst();
         while (!cursor.isAfterLast()){
-            for (int a=0;a<6;a++) {
+            for (int a=0;a<5;a++) {
                 if (!StringUtils.isBlank(cursor.getString(a))) {
                     size++;
                 }
@@ -212,13 +202,12 @@ public class SQLiteAdapter extends SQLiteOpenHelper {
             cursor.moveToNext();
         }
         String[] result = new String[size];
-        if (size <= 4) {
+        if (size < 4) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 result[0] = cursor.getString(0);
                 result[1] = cursor.getString(1);
                 result[2] = cursor.getString(4);
-                result[3] = cursor.getString(5);
                 cursor.moveToNext();
             }
         }else {
@@ -227,9 +216,8 @@ public class SQLiteAdapter extends SQLiteOpenHelper {
                 result[0] = cursor.getString(0);
                 result[1] = cursor.getString(1);
                 result[2] = cursor.getString(4);
-                result[3] = cursor.getString(5);
-                result[4] = cursor.getString(2);
-                result[5] = cursor.getString(3);
+                result[3] = cursor.getString(2);
+                result[4] = cursor.getString(3);
                 cursor.moveToNext();
             }
         }
@@ -245,32 +233,22 @@ public class SQLiteAdapter extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void addTcpSetting(String ip, String port_tcp, String use_or_not){
+    public void addTcpSetting(String ip, String port_tcp){
         db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         if (ip != null & port_tcp != null){
             values.put(ip_or_domain, ip);
             values.put(port, port_tcp);
-            values.put(status, use_or_not);
         }
         db.insert(tabel_setting_tcp, null, values);
-        db.close();
-    }
-
-    public void addTcpSettingStatus(String ip, String use_or_not){
-        db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(status, use_or_not);
-
-        db.insert(tabel_setting_mqtt, ip_or_domain + "='" + ip + "'", values);
         db.close();
     }
 
     public String[] getTcpSetting(){
         db = this.getReadableDatabase();
 
-        String[] columns = new String[]{ip_or_domain, port, status};
+        String[] columns = new String[]{ip_or_domain, port};
         Cursor cursor = db.query(tabel_setting_tcp, columns, null,
                 null, null, null, null);
         String[] result = new String[3];
@@ -278,7 +256,6 @@ public class SQLiteAdapter extends SQLiteOpenHelper {
         while (!cursor.isAfterLast()){
             result[0] = cursor.getString(0);
             result[1] = cursor.getString(1);
-            result[2] = cursor.getString(2);
             cursor.moveToNext();
         }
         cursor.close();

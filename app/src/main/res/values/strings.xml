@@ -97,5 +97,7 @@
     <string name="default_mqtt_broker">iot.eclipse.org</string>
     <string name="default_mqtt_port">1883</string>
     <string name="data_mqtt">data_mqtt</string>
+    <string name="localhost">localhost</string>
+    <string name="port_tcp">8080</string>
 
 </resources>

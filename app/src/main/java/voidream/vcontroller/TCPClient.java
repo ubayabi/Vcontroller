@@ -2,6 +2,7 @@ package voidream.vcontroller;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -16,28 +17,19 @@ import java.net.UnknownHostException;
 
 public class TCPClient {
 
-    String Address, response;
-    int Port;
-    Context context;
+    static String response;
+    static Context context;
 
-    public TCPClient(Context ini, String address, int port){
-        context = ini;
-        Address = address;
-        Port = port;
-    }
+    static Socket[] socket = {null};
+    static DataOutputStream[] dataOutputStream = {null};
+    static DataInputStream[] dataInputStream = {null};
 
-    Socket[] socket = {null};
-    DataOutputStream[] dataOutputStream = {null};
-    DataInputStream[] dataInputStream = {null};
-
-    public void sendData(final String data){
+    public static void sendData(final String data){
         Thread send = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    if (socket[0]==null) {
-                        connect();
-                    }else {
+                    if (socket[0]!=null) {
                         dataOutputStream[0].writeUTF(data);
                         ByteArrayOutputStream byteArrayOutputStream =
                                 new ByteArrayOutputStream(1024);
@@ -49,21 +41,16 @@ public class TCPClient {
                             response += byteArrayOutputStream.toString("UTF-8");
                         }
 
-                        Toast.makeText(context.getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context.getApplicationContext(), response, Toast.LENGTH_SHORT).show();
                     }
-                } catch (UnknownHostException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Log.e("TCP client send 1", e.getMessage());
                 } finally {
                     if (dataOutputStream[0] != null) {
                         try {
                             dataOutputStream[0].flush();
                         } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                            Log.e("TCP client send 2", e.getMessage());
                         }
                     }
                 }
@@ -115,50 +102,39 @@ public class TCPClient {
     }
     */
 
-    public void disconnect(){
-//        if (socket[0].isConnected()){
+    public static void disconnect(){
            Thread disconnect = new Thread(new Runnable() {
                @Override
                public void run() {
                    try {
-                       socket[0].close();
-                       if (socket[0]==null){
-                           PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("connectbutton", true).commit();
-                           Toast.makeText(context.getApplicationContext(), "Disonnected", Toast.LENGTH_SHORT).show();
-                       }else {
-                           PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("connectbutton", false).commit();
-                           Toast.makeText(context.getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+                       if (socket[0]!=null) {
+                           socket[0].close();
                        }
                    } catch (IOException e) {
                        e.printStackTrace();
                    }
                }
            }); disconnect.start();
-//        }
     }
 
-    public void connect(){
+    public static void connect(final String address, final String port){
         Thread connect = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    socket[0] = new Socket(Address, Port);
+                    socket[0] = new Socket(address, Integer.getInteger(port));
                     dataOutputStream[0] = new DataOutputStream(socket[0].getOutputStream());
                     dataInputStream[0] = new DataInputStream(socket[0].getInputStream());
                     socket[0].setKeepAlive(true);
                     if (socket[0]!=null){
-                        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("connectbutton", false).commit();
+                        //PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("connectbutton", false).apply();
                         //Toast.makeText(context.getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
                     }else {
-                        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("connectbutton", true).commit();
+                        //PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("connectbutton", true).apply();
                         //Toast.makeText(context.getApplicationContext(), "Disonnected", Toast.LENGTH_SHORT).show();
                     }
-                } catch (SocketException e) {
-                    e.printStackTrace();
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e("TCP client connect", e.getMessage());
                 }
             }
         }); connect.start();
