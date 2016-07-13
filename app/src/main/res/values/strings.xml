@@ -99,5 +99,7 @@
     <string name="data_mqtt">data_mqtt</string>
     <string name="localhost">localhost</string>
     <string name="port_tcp">8080</string>
+    <string name="wait">Waiting Response</string>
+    <string name="optional">optional</string>
 
 </resources>

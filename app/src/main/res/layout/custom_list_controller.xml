@@ -23,6 +23,9 @@
                 <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:checked="false"
+                    android:button="@drawable/output1_on_off"
                     android:id="@+id/imageview_controller_output_image"
                     android:layout_alignParentBottom="false"
                     android:layout_centerInParent="true" />

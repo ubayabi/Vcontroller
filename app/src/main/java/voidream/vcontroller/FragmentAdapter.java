@@ -16,6 +16,7 @@
 
 package voidream.vcontroller;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -32,17 +33,20 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import org.apache.commons.lang.ArrayUtils;
+
 public class FragmentAdapter extends Fragment {
 
 	private static final String ARG_POSITION = "position";
 
-	private int position;
-    private static int[] id_image;
-    private static String[][] data_controller;
+    private int position;
     private SQLiteAdapter sqLiteAdapter;
     private AdapterController adapterController;
-    private ListView controller;
-    private Handler handler;
+    private AdapterLog adapterLog;
+    private ListView controller, log_list;
+    private View controller_view, log_view, customize_view;
+    private RelativeLayout statistic, config, setting, load_save;
+    //private Handler handler;
 
 	public static FragmentAdapter newInstance(int position) {
 		FragmentAdapter f = new FragmentAdapter();
@@ -52,131 +56,102 @@ public class FragmentAdapter extends Fragment {
 		return f;
 	}
 
-	@Override
+	@SuppressLint("InflateParams")
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-        handler = new Handler(Looper.getMainLooper());
+        Context context = getContext();
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        getActivity().registerReceiver(broadcastReceiver, new IntentFilter(MqttService.BROADCAST_ACTION));
+        //handler = new Handler(Looper.getMainLooper());
 		position = getArguments().getInt(ARG_POSITION);
         sqLiteAdapter = new SQLiteAdapter(getActivity());
 
-	}
+        adapterController = new AdapterController(getActivity());
+        controller_view = inflater.inflate(R.layout.controller, null,false);
+        controller = (ListView)controller_view.findViewById(R.id.listController);
+
+        adapterLog = new AdapterLog(getActivity());
+        log_view = inflater.inflate(R.layout.log, null, false);
+        log_list = (ListView)log_view.findViewById(R.id.loglist);
+
+        customize_view = inflater.inflate(R.layout.customize, null,false);
+        statistic = (RelativeLayout) customize_view.findViewById(R.id.relativelayout_customize_statistic);
+        config = (RelativeLayout) customize_view.findViewById(R.id.relativelayout_customize_config);
+        setting = (RelativeLayout) customize_view.findViewById(R.id.relativelayout_customize_controller);
+        load_save = (RelativeLayout) customize_view.findViewById(R.id.relativelayout_customize_loadsave);
+
+    }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		//Controller
 		if(position==0){
-            getActivity().registerReceiver(broadcastReceiver, new IntentFilter(MqttService.BROADCAST_ACTION));
-			View view=inflater.inflate(R.layout.controller,container,false);
-			adapterController = new AdapterController(getContext());
+            if (PreferenceManager.getDefaultSharedPreferences(getActivity())
+                    .getString("tcp_mqtt", "").equals("mqtt")){
+                startMqttService();
+                AdapterController.tcp_or_mqtt = true;
+            }
+            if (PreferenceManager.getDefaultSharedPreferences(getActivity())
+                    .getString("tcp_mqtt", "").equals("tcp")){
+                connectTCP();
+                AdapterController.tcp_or_mqtt = false;
+            }
+            adapterController.updateData();
+            controller.setAdapter(adapterController);
 
-			controller = (ListView)view.findViewById(R.id.listController);
-			//final int[] idimage = {R.drawable.out_1on, R.drawable.out_1, R.drawable.out_1, R.drawable.out_1,
-			//		R.drawable.out_1on,R.drawable.out_1on,R.drawable.out_1on};
-			//String[] outputname = {"Lampu Kuning", "Lampu LED", "Lampu Belajar", "Test", "Test","Test","test"};
-			//String[] position = {"Ruang Tamu", "Dapur", "Kamar", "Test", "Test", "Test", "Test",};
-			//String[] power = {"10", "20", "5", "10","1","2","3"};
-			//String[] status = {"ON", "OFF", "Waiting Response", "OFF", "ON", "ON", "ON"};
-
-			if (sqLiteAdapter.getController() != null) {
-                data_controller = sqLiteAdapter.getController();
-                id_image = new int[data_controller[4].length];
-                for (int a=0;a<data_controller[4].length;a++){
-                    id_image[a] = Integer.valueOf(data_controller[4][a]);
-                }
-                adapterController.updateData
-                        (id_image, data_controller[0], data_controller[1]
-                                , data_controller[2], data_controller[3]);
-                if (PreferenceManager.getDefaultSharedPreferences(getActivity())
-                        .getString("tcp_mqtt", "").equals("mqtt")){
-                    startMqttService();
-                    AdapterController.tcp_or_mqtt = true;
-                }
-                if (PreferenceManager.getDefaultSharedPreferences(getActivity())
-                        .getString("tcp_mqtt", "").equals("tcp")){
-                    connectTCP();
-                    AdapterController.tcp_or_mqtt = false;
-                }
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        controller.setAdapter(adapterController);
-                    }
-                });
-
-			}
-
-            return view;
+            return controller_view;
 		}
 
 		//Log
 		if(position==1){
-			View view=inflater.inflate(R.layout.log,container,false);
+            adapterLog.updateData();
+            log_list.setAdapter(adapterLog);
 
-            /*
-			AdapterLog adapterLog = new AdapterLog(getContext());
-
-			ListView loglist = (ListView)view.findViewById(R.id.loglist);
-			int[] idimage = {R.drawable.out_log_1};
-			String[] outputname = {"Lampu Kuning 1", "Lampu LED", "Lampu Belajar", "Test", "Lampu LED", "Lampu Belajar", "Test",
-					 "Lampu LED", "Lampu Belajar", "Test"};
-			String[] explanation = {"has turned on.", "has turned off.", "has turned on.", "has turned on.", "has turned off.", "has turned on.", "has turned on.",
-					 "has turned off.", "has turned on.", "has turned on."};
-			String[] timeago = {"52s", "10m", "1h", "1d","10m", "1h", "1d","10m", "1h", "1d"};
-			String[] location = {"Ruang Tamu1", "Dapur", "Kamar", "Test", "Dapur", "Kamar", "Test", "Dapur", "Kamar", "Test"};
-			String[] timestamp = {"2016-03-05 05:30am", "2016-03-05 05:03am", "2016-03-05 03:22am", "2016-04-05 09:54pm"
-					, "2016-03-05 05:03am", "2016-03-05 03:22am", "2016-04-05 09:54pm", "2016-03-05 05:03am", "2016-03-05 03:22am", "2016-04-05 09:54pm"};
-			String[] number = {"01", "02", "03", "04", "02", "03", "04", "02", "03", "04"};
-			adapterLog.updateData(idimage, outputname, explanation, timeago, location, timestamp, number);
-			loglist.setAdapter(adapterLog);
-			*/
-			return  view;
+			return  log_view;
 		}
 
 		//Customize
 		if(position==2){
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    statistic.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent= new Intent(getActivity(), Statistic.class);
+                            getActivity().startActivity(intent);
+                        }
+                    });
 
-			View view=inflater.inflate(R.layout.customize,container,false);
+                    config.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent= new Intent(getActivity(), Config.class);
+                            getActivity().startActivity(intent);
+                        }
+                    });
 
-			RelativeLayout statistic = (RelativeLayout) view.findViewById(R.id.relativelayout_customize_statistic);
-			RelativeLayout config = (RelativeLayout) view.findViewById(R.id.relativelayout_customize_config);
-			RelativeLayout setting = (RelativeLayout) view.findViewById(R.id.relativelayout_customize_controller);
-			RelativeLayout load_save = (RelativeLayout) view.findViewById(R.id.relativelayout_customize_loadsave);
+                    setting.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent= new Intent(getActivity(), SettingOutput.class);
+                            getActivity().startActivity(intent);
+                        }
+                    });
 
-			statistic.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent intent= new Intent(getContext(), Statistic.class);
-					getContext().startActivity(intent);
-				}
-			});
+                    load_save.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent= new Intent(getActivity(),LoadSave.class);
+                            getActivity().startActivity(intent);
+                        }
+                    });
+                }
+            });
 
-			config.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent intent= new Intent(getContext(), Config.class);
-					getContext().startActivity(intent);
-				}
-			});
-
-			setting.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent intent= new Intent(getContext(), SettingOutput.class);
-					getContext().startActivity(intent);
-				}
-			});
-
-			load_save.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent intent= new Intent(getContext(),LoadSave.class);
-					getContext().startActivity(intent);
-				}
-			});
-
-			return  view;
+			return  customize_view;
         }
 
 		return  null;
@@ -191,7 +166,9 @@ public class FragmentAdapter extends Fragment {
 
     private void stopMqttService(){
         Intent start_service = new Intent(getActivity(), MqttService.class);
-        getActivity().stopService(start_service);
+        if (MqttService.mqttClient!=null) {
+            getActivity().stopService(start_service);
+        }
     }
 
     private void connectTCP(){
@@ -203,20 +180,17 @@ public class FragmentAdapter extends Fragment {
     }
 
     private void updateUI(Intent intent){
+        String[] getData = new String[0];
         if (intent != null) {
-            int pos = Integer.valueOf(intent.getStringArrayExtra("update_controller")[1]);
-            String status_ = intent.getStringArrayExtra("update_controller")[2];
-            data_controller[3][pos] = status_;
-            Runnable update = new Runnable() {
-                @Override
-                public void run() {
-                    adapterController.updateData(id_image, data_controller[0], data_controller[1]
-                            , data_controller[2], data_controller[3]);
-                    controller.setAdapter(adapterController);
-                }
-            };
-            handler.removeCallbacks(update);
-            handler.post(update);
+            getData = intent.getStringArrayExtra("update_controller");
+        }
+        if (!ArrayUtils.isEmpty(getData)) {
+            //int pos = Integer.parseInt(getData[1]);
+            //String status_ = getData[2];
+            adapterLog.updateData();
+            adapterController.updateData();
+            controller.setAdapter(adapterController);
+            log_list.setAdapter(adapterLog);
         }
     }
 
@@ -230,7 +204,7 @@ public class FragmentAdapter extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        getActivity().registerReceiver(broadcastReceiver, new IntentFilter(SettingOutputForm.BROADCAST_ACTION));
+        getActivity().registerReceiver(broadcastReceiver, new IntentFilter(MqttService.BROADCAST_ACTION));
     }
 
     @Override

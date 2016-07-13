@@ -1,6 +1,10 @@
 package voidream.vcontroller;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,39 +12,76 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-/**
- * Created by RnD2 on 4/19/2016.
- */
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class AdapterLog extends BaseAdapter {
 
-    int[] Id_outputimage;
-    String[] outputName;
-    String[] expla;
-    String[] ago;
-    String[] loc;
-    String[] stamp;
-    String[] num;
+    private int[] Id_outputimage;
+    private String[] outputName;
+    private String[] status;
+    private String[] ago;
+    private String[] loc;
+    //private String[] stamp;
+    private String[] dateString;
+    private String[] num;
 
-    Context context;
+    private Context context;
+    private Handler handler;
+    private SQLiteAdapter sqLiteAdapter;
     public AdapterLog(Context ini){
         context = ini;
+        handler = new Handler(Looper.getMainLooper());
+        sqLiteAdapter = new SQLiteAdapter(context);
     }
 
-    public void updateData(int[] id_outputimage, String[] outputname, String[] explanation, String[] timeAgo
-            , String[] location, String[] timeStamp, String[] number){
-        Id_outputimage = id_outputimage;
-        outputName = outputname;
-        expla = explanation;
-        ago = timeAgo;
-        loc = location;
-        stamp = timeStamp;
-        num = number;
+    public void updateData(){
+        if (sqLiteAdapter.getLog() != null) {
+            String[][] data_controller = sqLiteAdapter.getLog();
+            int[] id_image = new int[data_controller[5].length];
+            String[] output_number = new String[data_controller[5].length];
+            dateString = new String[data_controller[5].length];
+            Id_outputimage = new int[data_controller[5].length];
+            outputName = new String[data_controller[5].length];
+            loc = new String[data_controller[5].length];
+            status = new String[data_controller[5].length];
+            num = new String[data_controller[5].length];
+            ago = new String[data_controller[5].length];
+            for (int a = 0; a < data_controller[5].length; a++) {
+                output_number[a] = data_controller[0][a];
+                if (!StringUtils.isBlank(data_controller[5][a])) {
+                    id_image[a] = Integer.parseInt(data_controller[5][a]);
+                }
+            }
+
+            int b = 0;
+            for (int d = data_controller[5].length - 1; d >= 0; d--) {
+                dateString[b] = data_controller[6][d];
+                Id_outputimage[b] = id_image[d];
+                outputName[b] = data_controller[1][d];
+                loc[b] = data_controller[2][d];
+                status[b] = data_controller[4][d];
+                num[b] = output_number[d];
+                b++;
+            }
+        }else {
+            ArrayUtils.add(dateString, null);
+        }
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return outputName.length;
+        if (ArrayUtils.isEmpty(outputName)){
+            return 0;
+        }else {
+            return outputName.length;
+        }
     }
 
     @Override
@@ -53,27 +94,71 @@ public class AdapterLog extends BaseAdapter {
         return position;
     }
 
+    @SuppressLint({"ViewHolder", "InflateParams"})
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.custom_list_log, null);
 
-        TextView log_output = (TextView)convertView.findViewById(R.id.textview_log_output);
-        ImageView log_image = (ImageView)convertView.findViewById(R.id.imageview_log_image);
-        TextView log_explanation = (TextView)convertView.findViewById(R.id.textview_log_explanation);
-        TextView log_time_ago = (TextView)convertView.findViewById(R.id.textview_log_time_ago);
-        TextView log_location = (TextView)convertView.findViewById(R.id.textview_log_location);
-        TextView log_time_stamp = (TextView)convertView.findViewById(R.id.textview_log_time_stamp);
-        TextView log_number = (TextView)convertView.findViewById(R.id.textview_log_number);
+        final TextView log_output = (TextView)convertView.findViewById(R.id.textview_log_output);
+        final ImageView log_image = (ImageView)convertView.findViewById(R.id.imageview_log_image);
+        final TextView log_explanation = (TextView)convertView.findViewById(R.id.textview_log_explanation);
+        final TextView log_time_ago = (TextView)convertView.findViewById(R.id.textview_log_time_ago);
+        final TextView log_location = (TextView)convertView.findViewById(R.id.textview_log_location);
+        final TextView log_time_stamp = (TextView)convertView.findViewById(R.id.textview_log_time_stamp);
+        final TextView log_number = (TextView)convertView.findViewById(R.id.textview_log_number);
 
-        log_image.setImageResource(Id_outputimage[0]);
-        log_output.setText(outputName[position]);
-        log_explanation.setText(expla[position]);
-        log_time_ago.setText(ago[position]);
-        log_location.setText(loc[position]);
-        log_time_stamp.setText(stamp[position]);
-        log_number.setText(num[position]);
+        ago[position] = timeConverter.howManySecondsAgo(dateString[position]);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                log_image.setImageResource(Id_outputimage[position]);
+                log_output.setText(outputName[position]);
+                log_explanation.setText(status[position]);
+                log_time_ago.setText(ago[position]);
+                log_location.setText(loc[position]);
+                log_time_stamp.setText(dateString[position]);
+                log_number.setText(num[position]);
+            }
+        });
 
         return convertView;
+    }
+}
+
+class timeConverter {
+
+    private static String now_date = null;
+    private static String then_date = null;
+    private static int hours = 0;
+    private static int minute = 0;
+
+    public static String howManySecondsAgo(String datestring){
+        if (!StringUtils.isBlank(datestring)) {
+            if (!datestring.equals("Waiting Response")) {
+                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+                now_date = formatter.format(new Date().getTime()).split("-")[0];
+                String now_hours = formatter.format(new Date().getTime()).split(" ")[1].split(":")[0];
+                String now_minute = formatter.format(new Date().getTime()).split(" ")[1].split(":")[1];
+                then_date = datestring.split("-")[0];
+                String then_hours = datestring.split(" ")[1].split(":")[0];
+                String then_minute = datestring.split(" ")[1].split(":")[1];
+                hours = Integer.parseInt(now_hours) - Integer.parseInt(then_hours);
+                minute = Integer.parseInt(now_minute) - Integer.parseInt(then_minute);
+            }
+            if (now_date.equals(then_date)) {
+                if (hours > 1) {
+                    return String.format(Locale.getDefault(), "%2d hours ago", hours);
+                } else if (minute > 1) {
+                    return String.format(Locale.getDefault(), "%2d minutes ago", minute);
+                } else {
+                    return "seconds ago";
+                }
+            } else {
+                return "days ago";
+            }
+        }else {
+            return "Waiting Response";
+        }
     }
 }

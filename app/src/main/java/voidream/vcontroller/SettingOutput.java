@@ -18,6 +18,9 @@ import java.util.Set;
 
 public class SettingOutput extends Activity {
 
+    private AdapterSettingOutput adapterSettingOutput;
+    private ListView setting_output;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,8 +28,9 @@ public class SettingOutput extends Activity {
 
         registerReceiver(broadcastReceiver, new IntentFilter(SettingOutputForm.BROADCAST_ACTION));
 
-        final AdapterSettingOutput adapterSettingOutput = new AdapterSettingOutput(this);
-        ListView setting_output = (ListView) findViewById(R.id.listview_setting_output);
+        adapterSettingOutput = new AdapterSettingOutput(this);
+        adapterSettingOutput.updateData();
+        setting_output = (ListView) findViewById(R.id.listview_setting_output);
         setting_output.setAdapter(adapterSettingOutput);
 
         Button add_new = (Button)findViewById(R.id.button_setting_output_add);
@@ -42,9 +46,8 @@ public class SettingOutput extends Activity {
 
     private void updateUI(Intent intent){
         if (intent.hasExtra(getString(R.string.update_list_controller))){
-            finish();
-            Intent restart = new Intent(this, SettingOutput.class);
-            startActivity(restart);
+            adapterSettingOutput.updateData();
+            setting_output.setAdapter(adapterSettingOutput);
         }
     }
 

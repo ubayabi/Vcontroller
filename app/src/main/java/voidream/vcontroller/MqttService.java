@@ -18,6 +18,15 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+/**
+ * Created by Ryvaldie I. H on 6/17/2016.
+ *
+ */
+
 public class MqttService extends Service {
 
     public static MqttClient mqttClient;
@@ -105,10 +114,7 @@ public class MqttService extends Service {
                     });
 
                 } catch (MqttException e) {
-                    Toast.makeText(getApplicationContext()
-                            , MqttService.this.getResources().getString
-                                    (R.string.mqtt_error_toast, e.getMessage())
-                            , Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), MqttService.this.getResources().getString(R.string.mqtt_error_toast, e.getMessage()), Toast.LENGTH_LONG).show();
                     Log.e(MqttService.class.getSimpleName(), e.getMessage());
                 }
             }
@@ -121,7 +127,15 @@ public class MqttService extends Service {
         String output_name = message.split("/")[0];
         String no = message.split("/")[1];
         String status = message.split("/")[2];
-        sqLiteAdapter.addControllerStatus(output_name, status);
+        int pos = Integer.parseInt(no);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+        String timestamp = formatter.format(new Date().getTime());
+        sqLiteAdapter.addControllerStatus(output_name, status, timestamp);
+        if (!AdapterController.status[pos].equals("Waiting Response")) {
+            sqLiteAdapter.addLog(pos, AdapterController.outputName[pos], AdapterController.position[pos]
+                    , AdapterController.power[pos], AdapterController.status[pos],
+                    AdapterController.Id_outputimage[pos], timestamp);
+        }
         intent_broadcast.putExtra("update_controller", new String[]{output_name, no, status});
         sendBroadcast(intent_broadcast);
     }

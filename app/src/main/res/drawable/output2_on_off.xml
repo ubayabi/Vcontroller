@@ -3,4 +3,5 @@
           android:drawable="@drawable/out_2" />
     <item android:state_checked="true"
           android:drawable="@drawable/out_2on" />
+    <item android:drawable="@drawable/out_2"/>
 </selector>

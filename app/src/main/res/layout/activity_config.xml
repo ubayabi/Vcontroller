@@ -52,7 +52,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="38dp"
                     android:id="@+id/edittext_config_tcp_ip_or_domain_name"
-                    android:autoText="false"
+                    android:inputType="textWebEditText"
                     android:background="@drawable/background_textfield"
                     android:layout_margin="6dp"
                     android:paddingLeft="12dp"
@@ -72,6 +72,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="38dp"
+                    android:inputType="number"
                     android:id="@+id/edittext_config_tcp_port"
                     android:background="@drawable/background_textfield"
                     android:layout_margin="6dp"
@@ -104,7 +105,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="38dp"
                     android:id="@+id/edittext_config_mqtt_broker_url"
-                    android:autoText="false"
+                    android:inputType="textWebEditText"
                     android:background="@drawable/background_textfield"
                     android:layout_margin="6dp"
                     android:paddingLeft="12dp"
@@ -130,6 +131,7 @@
                     android:paddingLeft="12dp"
                     android:paddingRight="12dp"
                     android:paddingTop="6dp"
+                    android:inputType="number"
                     android:paddingBottom="6dp"
                     android:maxLength="4" />
 
@@ -159,9 +161,11 @@
                             android:id="@+id/edittext_config_mqtt_username"
                             android:background="@drawable/background_textfield"
                             android:layout_margin="6dp"
+                            android:hint="@string/optional"
                             android:paddingLeft="12dp"
                             android:paddingRight="12dp"
                             android:paddingTop="6dp"
+                            android:inputType="text"
                             android:paddingBottom="6dp"
                             android:maxLength="15" />
                     </LinearLayout>
@@ -187,6 +191,8 @@
                             android:id="@+id/edittext_config_mqtt_password"
                             android:background="@drawable/background_textfield"
                             android:layout_margin="6dp"
+                            android:hint="@string/optional"
+                            android:inputType="textPassword"
                             android:paddingLeft="12dp"
                             android:paddingRight="12dp"
                             android:paddingTop="6dp"
@@ -207,7 +213,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="38dp"
                     android:id="@+id/edittext_config_mqtt_topic"
-                    android:autoText="false"
+                    android:inputType="text"
                     android:background="@drawable/background_textfield"
                     android:layout_margin="6dp"
                     android:paddingLeft="12dp"

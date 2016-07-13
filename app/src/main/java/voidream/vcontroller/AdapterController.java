@@ -19,40 +19,53 @@ import android.widget.TextView;
 
 import org.apache.commons.lang.ArrayUtils;
 
-/**
- * Created by RnD2 on 4/19/2016.
- */
+import java.util.Locale;
+
 public class AdapterController extends BaseAdapter {
 
-    private int[] Id_outputimage;
-    private String[] outputName;
-    private String[] position;
-    private String[] power;
+    public static int[] Id_outputimage;
+    public static String[] outputName;
+    public static String[] position;
+    public static String[] power;
     public static String[] status;
+    public static String[] outputNumber;
     public static boolean tcp_or_mqtt;
 
-    private CheckBox output_image;
-    private TextView output_status;
-
-    static Context context;
+    private static Context context;
     private Handler handler;
-    public AdapterController(Context ini){
+    private SQLiteAdapter sqLiteAdapter;
+    public AdapterController(Context ini) {
         context = ini;
+        handler = new Handler(Looper.getMainLooper());
+        sqLiteAdapter = new SQLiteAdapter(context);
     }
 
-    public void updateData(int[] id_outputimage, String[] outputname, String[] position, String[] power
-            , String[] status){
-        Id_outputimage = id_outputimage;
-        outputName = outputname;
-        this.position = position;
-        this.power = power;
-        this.status = status;
+    public void updateData(){
+        if (sqLiteAdapter.getController() != null) {
+            String[][] data_controller = sqLiteAdapter.getController();
+            int[] id_image = new int[data_controller[4].length];
+            String[] output_number = new String[data_controller[4].length];
+            for (int a = 0; a < data_controller[4].length; a++) {
+                output_number[a] = String.format(Locale.getDefault(), "%02d", a);
+                id_image[a] = Integer.parseInt(data_controller[4][a]);
+            }
+            Id_outputimage = id_image;
+            outputName = data_controller[0];
+            position = data_controller[1];
+            power = data_controller[2];
+            status = data_controller[3];
+            outputNumber = output_number;
+        }
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return outputName.length;
+        if (ArrayUtils.isEmpty(outputName)){
+            return 0;
+        }else {
+            return outputName.length;
+        }
     }
 
     @Override
@@ -68,28 +81,35 @@ public class AdapterController extends BaseAdapter {
     @SuppressLint({"ViewHolder", "InflateParams"})
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        handler = new Handler(Looper.getMainLooper());
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.custom_list_controller, null);
 
-        TextView output_number = (TextView)convertView.findViewById(R.id.textview_output_number);
-        output_image = (CheckBox) convertView.findViewById(R.id.imageview_controller_output_image);
+        final TextView output_number = (TextView)convertView.findViewById(R.id.textview_output_number);
+        final CheckBox output_image = (CheckBox) convertView.findViewById(R.id.imageview_controller_output_image);
         final TextView output_name = (TextView)convertView.findViewById(R.id.textview_controller_output_name);
-        TextView output_position = (TextView)convertView.findViewById(R.id.textview_controller_output_position);
-        TextView output_power = (TextView)convertView.findViewById(R.id.textview_controller_output_power);
-        output_status = (TextView) convertView.findViewById(R.id.textview_controller_output_status);
+        final TextView output_position = (TextView)convertView.findViewById(R.id.textview_controller_output_position);
+        final TextView output_power = (TextView)convertView.findViewById(R.id.textview_controller_output_power);
+        final TextView output_status = (TextView) convertView.findViewById(R.id.textview_controller_output_status);
         ImageButton button_push = (ImageButton)convertView.findViewById(R.id.imagebutton_controller_push_button);
         ImageButton button_timer = (ImageButton)convertView.findViewById(R.id.imagebutton_controller_timer);
 
-        output_number.setText(String.format("%0" + (2 - String.valueOf(position).length()) + "d%s", 0, String.valueOf(position)));
-        output_image.setButtonDrawable(Id_outputimage[position]);
-        output_image.setClickable(false);
-        output_image.setChecked(status[position].equals("on"));
-        output_name.setText(outputName[position]);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                output_number.setText(outputNumber[position]);
+                output_image.setButtonDrawable(Id_outputimage[position]);
+                if (status[position].equals("on")) {
+                    output_image.setChecked(true);
+                }else {
+                    output_image.setChecked(false);
+                }
+                output_name.setText(outputName[position]);
 
-        output_position.setText(this.position[position]);
-        output_power.setText(power[position]);
-        output_status.setText(status[position]);
+                output_position.setText(AdapterController.position[position]);
+                output_power.setText(power[position]);
+                output_status.setText(status[position]);
+            }
+        });
 
         final MqttPublisher publisher = new MqttPublisher(context);
         button_push.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +128,7 @@ public class AdapterController extends BaseAdapter {
                         TCPClient.sendData(outputName[position] + "/" + position + "/off");
                     }
                 }
+                output_status.setText(context.getString(R.string.wait));
             }
         });
 
