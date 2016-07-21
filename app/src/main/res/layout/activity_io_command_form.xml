@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content" >
 
                     <Button
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="38dp"
                         android:text="@string/test"
                         android:id="@+id/button_io_command_test_on"
@@ -138,7 +138,7 @@
                     android:layout_height="wrap_content" >
 
                     <Button
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="38dp"
                         android:text="@string/test"
                         android:id="@+id/button_io_command_test_off"
@@ -179,5 +179,12 @@
 
         </LinearLayout>
     </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/text2"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"></RelativeLayout>
 
 </RelativeLayout>

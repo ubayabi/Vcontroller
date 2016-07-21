@@ -62,5 +62,6 @@
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/relativeLayout2"></RelativeLayout>
+        android:id="@+id/relativeLayout2"
+        android:background="@color/text2"></RelativeLayout>
 </RelativeLayout>

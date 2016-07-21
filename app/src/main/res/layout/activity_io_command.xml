@@ -14,15 +14,11 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"></RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.25"
-            android:layout_marginRight="6dp"
+            android:background="@drawable/background_rounded_rectangle_grey"
             android:layout_marginLeft="6dp"
-            android:background="@drawable/background_rounded_rectangle_grey" >
+            android:layout_marginTop="56dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginBottom="6dp">
 
             <ListView
                 android:layout_width="match_parent"
@@ -33,7 +29,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_height="50dp"
+            android:background="@color/text2"></RelativeLayout>
+
     </LinearLayout>
 </RelativeLayout>
