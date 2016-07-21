@@ -61,7 +61,7 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="topic">Topic</string>
-    <string name="set_config">OK</string>
+    <string name="set_config">Save</string>
     <string name="set_topic" formatted="false">%s/%s</string>
 
     <string name="send">Input Output Command</string>
